@@ -8,6 +8,16 @@
         </h4>
 
     </div>
-    <div class="card-text p-1">@Model.Description</div>
-
+    <form id="@Model.ProductId" asp-page="/Cart" method="post">
+        <input type="text" asp-for="ProductId" />
+        <input type="text" name="returnUrl"
+            value="@ViewContext.HttpContext.Request.PathAndQuery()"/>
+        <span class="card-text p-1">
+            @Model.Description
+            <button type="submit" style="float:right"
+            class="btn btn-success btn-sm pull-right">
+                Add to card
+            </button>
+        </span>
+    </form>
 </div>
