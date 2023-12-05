@@ -1,3 +1,56 @@
 ﻿@page "/admin/products"
 @page "/admin"
-<h4>This is the products component</h4>
+@inherits OwningComponentBase<IStoreRepository>
+
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+        <th>id</th>
+        <th>name</th>
+        <th>Category</th>
+        <th>Price</th>
+    </thead>
+    <tbody>
+        @if (productData?.Count() > 0){
+           @foreach (Product item in productData)
+           {
+               <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Category</td>
+                    <td>@item.Price.ToString("c")</td>
+                    <td>
+                        <NavLink class="btn btn-info btn-sm" href="@GeturlDetails(item.ProductId ?? 0)">Details</NavLink>
+                        <NavLink class="btn btn-warning btn-sm" href="@GeturlEdit(item.ProductId ?? 0)">Edit</NavLink>
+                    </td>
+               </tr>
+           }
+        }else {
+            <tr>
+                <td colspan="5" class="text-danger">No products</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<NavLink class="btn btn-primary" href="/admin/products/create">Create</NavLink>
+@code {
+    public IStoreRepository Repository => Service;
+    public IEnumerable<Product> productData {get ;set;} 
+    = Enumerable.Empty<Product>();
+    protected async override Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+    public async Task UpdateData()
+    {
+        productData = await Repository.Products.ToListAsync();
+    }
+    public string GeturlDetails(long id) 
+    {
+        return $"/admin/products/details/{id}";
+    }
+    public string GeturlEdit(long id) 
+    { 
+        return $"/admin/products/edit/{id}";
+    }
+
+}
